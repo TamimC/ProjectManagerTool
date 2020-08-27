@@ -14,10 +14,14 @@ public class ErrorValidationService {
 
     public ResponseEntity<?> getErrorResponseMap(BindingResult bindingResult)
     {
-        Map<String, String> errorMap = new HashMap<>();
-        for (FieldError error : bindingResult.getFieldErrors()) {
-               errorMap.put(error.getField(), error.getDefaultMessage());
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errorMap = new HashMap<>();
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errorMap.put(error.getField(), error.getDefaultMessage());
+            }
+            return new ResponseEntity<Map<String,String>>(errorMap, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<Map<String,String>>(errorMap, HttpStatus.BAD_REQUEST);
+
+        return null;
     }
 }

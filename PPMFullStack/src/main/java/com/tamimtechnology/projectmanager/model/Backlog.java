@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -17,11 +19,11 @@ public class Backlog {
     private Long id;
     private Integer PTSequence = 0;
     private String projectIdentifier;
-    // One to one with project - 1 project, 1 backlog
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "project_id", nullable = false)
     @JsonIgnore
     private Project project;
-    // One to Many projectTasks - One backlog can have many tasks
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "backlog")
+    private List<ProjectTask> projectTaskList = new ArrayList<>();
 
 }

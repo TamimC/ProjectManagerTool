@@ -1,5 +1,6 @@
 package com.tamimtechnology.projectmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,7 +17,7 @@ public class ProjectTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column (updatable = false)
+    @Column (updatable = false, unique = true)
     private String projectSequence;
     @NotBlank(message = "Please include a project summary.")
     private String summary;
@@ -24,7 +25,10 @@ public class ProjectTask {
     private String status;
     private Integer priority;
     private Date dueDate;
-    // Many to one with backlog
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "backlog_id", updatable = false, nullable = false)
+    @JsonIgnore
+    private Backlog backlog;
     @Column(updatable = false)
     private String projectIdentifier;
     //One to one with Projects

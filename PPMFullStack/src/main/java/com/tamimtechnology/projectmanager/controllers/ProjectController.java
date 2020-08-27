@@ -16,8 +16,8 @@ import javax.validation.Valid;
 @CrossOrigin
 public class ProjectController {
 
-    private ProjectService projectService;
-    private ErrorValidationService errorValidationService;
+    private final ProjectService projectService;
+    private final ErrorValidationService errorValidationService;
 
     public ProjectController(ProjectService projectService, ErrorValidationService errorValidationService) {
         this.projectService = projectService;
