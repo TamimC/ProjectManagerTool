@@ -4,6 +4,7 @@ import com.tamimtechnology.projectmanager.exceptions.BacklogNotFoundException;
 import com.tamimtechnology.projectmanager.exceptions.ProjectNotFoundException;
 import com.tamimtechnology.projectmanager.exceptions.ProjectTaskNotFoundException;
 import com.tamimtechnology.projectmanager.model.Backlog;
+import com.tamimtechnology.projectmanager.model.Project;
 import com.tamimtechnology.projectmanager.model.ProjectTask;
 import com.tamimtechnology.projectmanager.repositories.BacklogRepository;
 import com.tamimtechnology.projectmanager.repositories.ProjectRepository;
@@ -55,7 +56,12 @@ public class ProjectTaskService {
         ProjectTask desiredTask = validateProjectTaskSequence(backlog_id, projectTaskSequence);
         desiredTask = updatedProjectTask;
 
-        return desiredTask;
+        return projectTaskRepository.save(desiredTask);
+    }
+
+    public void deleteProjectTask(String backlog_id, String projectTaskSequence){
+        ProjectTask desiredTask = validateProjectTaskSequence(backlog_id, projectTaskSequence);
+        projectTaskRepository.delete(desiredTask);
     }
 
     // Helper Method
@@ -76,4 +82,5 @@ public class ProjectTaskService {
 
         return desiredTask;
     }
+
 }

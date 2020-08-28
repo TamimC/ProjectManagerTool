@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -27,16 +28,15 @@ public class BacklogController {
     @PostMapping("/{backlog_id}")
     public ResponseEntity<?> addProjectTaskToBacklog(@Valid @RequestBody ProjectTask projectTask, BindingResult result,
                                                      @PathVariable String backlog_id){
-        ResponseEntity<?> errorMap = errorValidationService.getErrorResponseMap(result);
-        if (errorMap != null) return errorMap;
+        if (errorValidationService.getErrorResponseMap(result) != null) return errorValidationService.getErrorResponseMap(result);
 
         ProjectTask projectTask1 = projectTaskService.addProjectTask(backlog_id, projectTask);
-        return new ResponseEntity<ProjectTask>(projectTask1, HttpStatus.CREATED);
+        return new ResponseEntity<>(projectTask1, HttpStatus.CREATED);
     }
 
     @GetMapping("/{backlog_id}")
     public ResponseEntity<List<ProjectTask>> getListOfProjectTasks(@PathVariable String backlog_id){
-        return new ResponseEntity<List<ProjectTask>>(projectTaskService.findAllTasksByProjectIdentifier(backlog_id), HttpStatus.OK);
+        return new ResponseEntity<>(projectTaskService.findAllTasksByProjectIdentifier(backlog_id), HttpStatus.OK);
     }
 
     @GetMapping("{backlog_id}/{projectTask_sequence}")
@@ -44,8 +44,21 @@ public class BacklogController {
         return new ResponseEntity<ProjectTask>(projectTaskService.getProjectTaskByProjectTaskSequence(backlog_id, projectTask_sequence), HttpStatus.OK);
     }
 
-    @PutMapping("{backlog_id}/{projectTask_sequence}")
-    public ResponseEntity<ProjectTask> updateProjectTask(@PathVariable String backlog_id, @PathVariable String projectTask_sequence, @Valid @RequestBody ProjectTask updatedProjectTask){
-        return new ResponseEntity<ProjectTask>(projectTaskService.updateProjectTask(backlog_id, projectTask_sequence, updatedProjectTask), HttpStatus.OK);
+    @PatchMapping("{backlog_id}/{projectTask_sequence}")
+    public ResponseEntity<?> updateProjectTask(@PathVariable String backlog_id,
+                                                         @PathVariable String projectTask_sequence,
+                                                         @Valid @RequestBody ProjectTask updatedProjectTask,
+                                                         BindingResult result)
+    {
+        if (errorValidationService.getErrorResponseMap(result) != null) return errorValidationService.getErrorResponseMap(result);
+        return new ResponseEntity<>(projectTaskService.updateProjectTask(backlog_id, projectTask_sequence, updatedProjectTask), HttpStatus.OK);
+    }
+
+    @DeleteMapping("{backlog_id}/{projectTask_sequence}")
+    @Transactional
+    public ResponseEntity<?> deleteProjectTask(@PathVariable String backlog_id,
+                                               @PathVariable String projectTask_sequence){
+        projectTaskService.deleteProjectTask(backlog_id, projectTask_sequence);
+        return new ResponseEntity<String>("Project Task with backlog ID" + backlog_id + " and Project Task Sequence " + projectTask_sequence + " was successfully deleted", HttpStatus.OK);
     }
 }
