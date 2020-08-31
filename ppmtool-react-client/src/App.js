@@ -7,6 +7,8 @@ import Header from "./components/Layout/Header";
 import UpdateProject from "./components/Project/UpdateProject";
 import AddProject from "./components/Project/AddProject";
 import Dashboard from "./components/dashboard";
+import ProjectBoard from "./components/Project/ProjectBoard/Projectboard";
+import AddProjectTask from "./components/Project/ProjectBoard/ProjecTasks/AddProjectTask";
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
           <Route exact path="/Dashboard" component={Dashboard} />
           <Route exact path="/addProject" component={AddProject} />
           <Route exact path="/updateProject/:id" component={UpdateProject} />
+          <Route exact path="/projectBoard/:id" component={ProjectBoard} />
+          <Route exact path="/addProjectTask/:id" component={AddProjectTask} />
         </div>
       </Router>
     </Provider>
